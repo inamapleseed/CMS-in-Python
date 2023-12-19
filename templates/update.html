@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit Job Post
+{% endblock %}
+
+{% block main %}
+    {% for item in job%}
+        <form action="/update" method="post">
+            <input name="job_id" value="{{ item['id'] }}" type="hidden"/>
+            <div class="mb-6">
+                <label>Job Title:</label>
+                <input autofocus required class="form-control mx-auto w-auto" id="job_title" name="job_title" placeholder="Job Title" type="text" value="{{ item['title'] }}">
+            </div>
+            <br>
+            <div class="mb-3">
+                <label>Job Description:</label>
+                <textarea required class="form-control mx-auto w-auto" placeholder="Job Description" name="job_desc" id="job_desc" rows="4">{{ item['description'] }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label>Department:</label>
+                <select required name="department" id="department" class="form-control mx-auto w-auto" >
+                    {% for dept in depts %}
+                        <option {% if dept['id'] == item['dept_id'] %} selected {% endif %} value="{{ dept['id'] }}">{{ dept['name'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label>Status:</label>
+                <input type="radio" value="true" name="status" {% if item["status"] == "true" %} checked="checked" {% endif %}></input>
+                <label for="">Active</label>
+
+                <input type="radio" value="false" name="status" {% if item["status"] == "false" %} checked="checked" {% endif %}></input>
+                <label>Draft</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a class="btn btn-danger" href="/">Back</a>
+        </form>
+    {% endfor %}
+{% endblock %}
+

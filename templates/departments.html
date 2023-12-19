@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Department List
+{% endblock %}
+
+{% block main %}
+    <section class="jobs-container">
+        {% for dept in depts %}
+            <div class="job">
+                <h3 name="title">{{ job['title']}}</h3>
+
+                <div>
+                    <label>Department:</label>
+                    {% for dept in depts %}
+                        {% if dept['id'] == job['dept_id'] %}
+                            <strong>{{ dept['name'] }}</strong>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}

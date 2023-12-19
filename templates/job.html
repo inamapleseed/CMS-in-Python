@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Job Page
+{% endblock %}
+
+{% block main %}
+    {% for item in job%}
+        <div>
+            <div class="mb-3">
+
+                {% for dept in depts %}
+                    {% if dept['id'] == item['dept_id'] %}
+                        <div>Department: {{ dept['name'] }}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="mb-6">
+                <h3>{{ item['title'] }}</h3>
+            </div>
+            <br>
+            <div class="mb-3">
+                <p>{{ item['description'] }}</p>
+            </div>
+            {% if session['user_id'] %}
+                <div class="mb-3">
+                    <label>Status:</label>
+                    {% if item["status"] == "true" %}
+                        Active
+                    {% else %}
+                        Draft
+                    {% endif %}
+                </div>
+            {% else %}
+                <a class="btn btn-primary" href="/apply">Apply</a>
+                <a class="btn btn-danger" href="/">Back</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+{% endblock %}

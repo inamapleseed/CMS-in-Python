@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Create a Job Post
+{% endblock %}
+
+{% block main %}
+    <form action="/create" method="post">
+        <div class="mb-6">
+            <input autofocus required class="form-control mx-auto w-auto" id="jobtitle" name="jobtitle" placeholder="Job Title" type="text">
+        </div>
+        <br>
+        <div class="mb-3">
+            <textarea required class="form-control mx-auto w-auto" placeholder="Job Description" name="jobdesc" id="jobdesc" rows="4"></textarea>
+        </div>
+        <div class="mb-3">
+            <select required name="department" id="department" class="form-control mx-auto w-auto" >
+                <option disabled selected select="selected">Select a department</option>
+                {% for dept in depts %}
+                    <option value="{{ dept['id'] }}">{{ dept['name'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <input checked="checked" type="radio" value="0" name="status"></input>
+            <label>Hide</label>
+            <input type="radio" value="1" name="status"></input>
+            <label for="">Show</label>
+        </div>
+        <button class="btn btn-primary" type="submit">Save</button>
+    </form>
+{% endblock %}
