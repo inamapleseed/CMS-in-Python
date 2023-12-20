@@ -1,3 +1,13 @@
+.centre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.round-border {
+  border-radius: 10px;
+}
+
 /* Size for brand */
 nav .navbar-brand
 {
@@ -109,3 +119,25 @@ nav .navbar-brand .green
   padding-left: 9px;
   height: 0;
 }
+
+/* department */
+.dept-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.dept-block {
+  padding: 20px;
+  flex-direction: column;
+  height: 100px;
+  background: #E2861B;
+  transition: .7s ease;
+  color: #fff;
+  margin: 10px;
+
+}
+@media (min-width: 800px) {
+  .dept-block {
+    width: calc((100%/4) - 20px);
+  }
+}
+/* department */

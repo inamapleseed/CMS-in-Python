@@ -5,19 +5,10 @@
 {% endblock %}
 
 {% block main %}
-    <section class="jobs-container">
+    <section class="dept-container">
         {% for dept in depts %}
-            <div class="job">
-                <h3 name="title">{{ job['title']}}</h3>
-
-                <div>
-                    <label>Department:</label>
-                    {% for dept in depts %}
-                        {% if dept['id'] == job['dept_id'] %}
-                            <strong>{{ dept['name'] }}</strong>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+            <div class="dept-block centre round-border">
+                <a >{{ dept['name'] }}</a>
             </div>
         {% endfor %}
     </section>

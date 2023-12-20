@@ -209,3 +209,9 @@ def register():
 @app.route("/apply")
 def apply():
     return apology("TODO")
+
+
+@app.route("/departments")
+@login_required
+def departments():
+    return render_template("/departments.html", depts=depts)
