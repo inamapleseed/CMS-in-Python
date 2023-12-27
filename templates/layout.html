@@ -33,18 +33,17 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbar">
+                    <ul class="navbar-nav me-auto mt-2">
+                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/careers">Careers</a></li>
                     {% if session["user_id"] %}
-                        <ul class="navbar-nav me-auto mt-2">
-                            <li class="nav-item"><a class="nav-link" href="/">Job Postings</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/create">Create</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/departments">Departments</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/create">Create a Job Post</a></li>
                         </ul>
                         <ul class="navbar-nav ms-auto mt-2">
+                            <li class="nav-item"><a class="nav-link">Hi, {{ session["username"] }} </a></li>
                             <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
                         </ul>
                     {% else %}
-                        <ul class="navbar-nav me-auto mt-2">
-                            <li class="nav-item"><a class="nav-link" href="/">Job Postings</a></li>
                         </ul>
                         <ul class="navbar-nav ms-auto mt-2 nav-admin">
                             <sub>For admin use only</sub>

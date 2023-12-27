@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Careers Page
+{% endblock %}
+
+{% block main %}
+    <section>
+        <div class="filter">
+            <select id="deptFilter" onchange="filterByDept()">
+                <option selected disabled>Filter by department</option>
+                {% for dept in depts %}
+                    <option value="{{ dept['id'] }}" >{{ dept['name'] }}</option>
+                {% endfor %}
+            </select>
+            <input type="" id="dept_id" value=""/>
+        </div>
+
+        <script>
+            // include selected department ID in URL
+            function filterByDept() {
+                let val = document.getElementById("deptFilter").value;
+
+                let currentURL = new URL(window.location.href);
+
+                let inputParams = new URLSearchParams(window.location.search);
+
+                if(inputParams.has("dept_id")) {
+                    inputParams.set("dept_id", val);
+                } else {
+                    inputParams.append("dept_id", val);
+                }
+
+                currentURL.search = inputParams.toString();
+
+                window.history.replaceState({}, '', currentURL);
+
+                let dept_id = document.getElementById("dept_id").value = val;
+            }
+            // show only jobs that are under selected department ID
+
+        </script>
+
+        <div class="jobs-container" id="jobs-container">
+            {% for job in results %}
+                {% if session['user_id'] %}
+                    <div class="job">
+                        <h3 name="title">{{ job['title']}}</h3>
+
+                        <div>
+                            {% for dept in depts %}
+                                {% if dept['id'] == job['dept_id'] %}
+                                    <span>{{ dept['name'] }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <span>Status:
+                            <span name="status">
+                                {% if job['status'] == 'false' %}
+                                    Draft
+                                {% else %}
+                                    Active
+                                {% endif %}
+                            </span>
+                        </span>
+
+                        <div class="btns">
+                            <a class="btn btn-primary" id="job-read-more" name ="job-read-more" href="/job?job-read-more={{ job['id']}}">Read More</a>
+                            <a class="btn btn-primary" id="job-edit" name ="job-edit" href="/update?job-edit={{ job['id']}}">Edit</a>
+                            <button type="button" class="btn btn-danger btn-del" data-id="{{ job['id']}}" data-jobTitle="{{ job['title']}}">Delete</button>
+                        </div>
+                    </div>
+                {% else %}
+                    {% if job['status'] == 'true' %}
+                        <div class="job">
+                            <h3 name="title">{{ job['title']}}</h3>
+
+                            <div>
+                                <label>Department:</label>
+                                {% for dept in depts %}
+                                    {% if dept['id'] == job['dept_id'] %}
+                                        <strong>{{ dept['name'] }}</strong>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                            <div class="btns">
+                                <a class="btn btn-primary" id="job-read-more" name ="job-read-more" href="/job?job-read-more={{ job['id']}}">Read More</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- modal -->
+        <div id="modal" class="modal hide">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p></p>
+                <div class="modal-btns">
+                    <form action="/delete" method="post">
+                        <input value="" name="job-id" id="job-id" type="hidden"/>
+                        <button class="btn btn-danger" id="job-delete">Proceed</button>
+                    </form>
+                    <button class="btn btn-primary close" id="back" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // this is to toggle the modal and populate it with details of item for deletion
+            var dltModal = document.getElementById('modal');
+
+            document.querySelectorAll('.btn-del').forEach(function(event) {
+                event.addEventListener('click', function(){
+                    var id = event.getAttribute('data-id');
+                    var jobTitle = event.getAttribute('data-jobTitle');
+
+                    dltModal.querySelector('p').innerHTML = "Are you sure you want to delete \"" + jobTitle + "\"?";
+
+                    document.getElementById("job-id").value = id;
+
+                    dltModal.classList.toggle('active');
+                    dltModal.classList.toggle('hide');
+                })
+            })
+            // end
+
+            // close btns to dismiss modals
+            document.querySelectorAll('.close').forEach(function(element) {
+                element.addEventListener('click', function(){
+                    dltModal.classList.toggle('active');
+                    dltModal.classList.toggle('hide');
+                })
+            })
+            // pop up only on delete btn
+            // fix buttons
+        </script>
+    </section>
+{% endblock %}

@@ -1,4 +1,5 @@
 import os
+import string
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
@@ -18,10 +19,22 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///project.db")
 
 depts = db.execute("SELECT * FROM departments")
+
+def check_session():
+    if 'user_id' not in session:
+        return redirect("/login.html")
+    else:
+        username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
+        session['username'] = username[0]['username']
+
+@app.before_request
+def before_request():
+    check_session()
 
 @app.after_request
 def after_request(response):
@@ -34,17 +47,7 @@ def after_request(response):
 
 @app.route("/")
 def index():
-    """Show all job posts"""
-    jobs = db.execute("SELECT * FROM jobs")
-
-    job_edit_id = request.form.get('job-edit')
-
-    for row in jobs:
-        if job_edit_id == row['id']:
-
-            return render_template("/update.html")
-
-    return render_template("/index.html", results=jobs, depts=depts)
+    return render_template("/index.html")
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -106,6 +109,21 @@ def job():
         return apology("Invalid URL", 404)
 
     return render_template("/job.html", job=job, depts=depts)
+
+
+@app.route("/careers")
+def careers():
+    """Show all job posts"""
+    jobs = db.execute("SELECT * FROM jobs")
+
+    job_edit_id = request.form.get('job-edit')
+
+    for row in jobs:
+        if job_edit_id == row['id']:
+
+            return render_template("/update.html")
+
+    return render_template("/careers.html", results=jobs, depts=depts)
 
 
 @app.route("/delete", methods=["GET", "POST"])
@@ -170,6 +188,22 @@ def logout():
     return redirect("/")
 
 
+special_chars = set("!@#$%^&*.")
+
+def validation(input):
+    # 8-16 chars
+    if len(input) >= 8 and len(input) <= 100:
+        for c in input:
+            if c.isalpha():
+                if c in string.punctuation:
+                    # allow only specific special characters
+                    # no space
+                    if c not in special_chars or c == ' ':
+                        return False
+    else:
+        return False
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
@@ -181,7 +215,10 @@ def register():
 
         usernames = db.execute("SELECT username FROM users")
 
-        if regcode != 'tsa2003':
+        if validation(user) == False:
+            return apology("Username must be at least 8 characters long, no spaces, and may only contain either ., !, @, #, $, %, ^, &, or *", 400)
+
+        if regcode != '':
             return apology("Invalid Registration Code", 400)
         elif not user:
             return apology("Invalid Username", 400)
@@ -209,9 +246,3 @@ def register():
 @app.route("/apply")
 def apply():
     return apology("TODO")
-
-
-@app.route("/departments")
-@login_required
-def departments():
-    return render_template("/departments.html", depts=depts)

@@ -8,6 +8,18 @@
   border-radius: 10px;
 }
 
+.text-left {
+  text-align: left;
+}
+
+.info {
+  color: grey;
+}
+
+.alert {
+  color: red;
+}
+
 /* Size for brand */
 nav .navbar-brand
 {

@@ -8,6 +8,7 @@
     <form action="/register" method="post">
         <div class="mb-3">
             <input class="form-control mx-auto w-auto" autofocus id="regcode" name="regcode" placeholder="Admin Registration Code" type="password">
+            <sub class="info">(Provided by admin)</sub>
         </div>
         <div class="mb-3">
             <input autocomplete="off"  class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
@@ -18,6 +19,15 @@
         <div class="mb-3">
             <input class="form-control mx-auto w-auto" id="password_confi" name="confirmation" placeholder="Confirm Password" type="password">
         </div>
+        <div>
+            <sub class="info">
+                (Username and password<br>
+                must be at least 8 characters long<br>
+                must not contain spaces<br>
+                and may contain only either ., !, @, #, $, %, ^, &, or *)
+            </sub>
+        </div>
+        <br>
         <button class="btn btn-primary" type="submit">Register</button>
     </form>
 {% endblock %}
