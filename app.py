@@ -188,20 +188,51 @@ def logout():
     return redirect("/")
 
 
-special_chars = set("!@#$%^&*.")
+def validation_username(input):
+    special_chars_user = set("@.")
+    error_count = 0
 
-def validation(input):
-    # 8-16 chars
-    if len(input) >= 8 and len(input) <= 100:
-        for c in input:
-            if c.isalpha():
-                if c in string.punctuation:
-                    # allow only specific special characters
-                    # no space
-                    if c not in special_chars or c == ' ':
-                        return False
+    # allow only 8-64 chars
+    if len(input) >= 8 and len(input) <= 64:
+        if input.isalnum():
+            return error_count
+        else:
+            for c in input:
+                # if has punctuations
+                if c not in special_chars_user and not c.isalnum():
+                    error_count += 1
+                    break
+
+            if error_count > 0:
+                return error_count
+            else:
+                return error_count
     else:
-        return False
+        error_count += 1
+        return error_count
+
+def validation_pw(input):
+    error_count = 0
+    special_chars_pw = set("!@#$%^&*.")
+
+    # allow only 8-64 chars
+    if len(input) >= 8 and len(input) <= 64:
+        if input.isalnum():
+            return error_count
+        else:
+            for c in input:
+                # if has punctuations
+                if c not in special_chars_pw and not c.isalnum():
+                    error_count += 1
+                    break
+
+            if error_count > 0:
+                return error_count
+            else:
+                return error_count
+    else:
+        error_count += 1
+        return error_count
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -215,14 +246,17 @@ def register():
 
         usernames = db.execute("SELECT username FROM users")
 
-        if validation(user) == False:
-            return apology("Username must be at least 8 characters long, no spaces, and may only contain either ., !, @, #, $, %, ^, &, or *", 400)
+        is_valid_user = validation_username(user)
+        is_valid_pw = validation_pw(pw)
+
+        # if is_valid_user > 0:
+        #     return apology("Username must be at least 8 alphanumeric characters long, no spaces, and may only contain . and/or @", 400)
 
         if regcode != '':
             return apology("Invalid Registration Code", 400)
-        elif not user:
+        elif is_valid_user > 0:
             return apology("Invalid Username", 400)
-        elif not pw:
+        elif is_valid_pw > 0:
             return apology("Invalid Password", 400)
         elif pw != pw2:
             return apology("Password did not match", 400)
