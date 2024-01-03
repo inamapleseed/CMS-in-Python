@@ -2,7 +2,7 @@ import os
 import string
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -114,13 +114,31 @@ def job():
 @app.route("/careers")
 def careers():
     """Show all job posts"""
-    jobs = db.execute("SELECT * FROM jobs")
+    # filter job by dept
 
+    if request.args:
+        filter_dept_id = request.args.get('dept_id')
+
+        if filter_dept_id == 'all':
+            jobs = db.execute("SELECT * FROM jobs")
+            # filteredDept = depts
+        else:
+            jobs = db.execute("SELECT * FROM jobs WHERE dept_id = ?", (filter_dept_id,))
+            # filteredDept = db.execute("SELECT name FROM departments WHERE id = ?", (filter_dept_id,))
+    else:
+        jobs = db.execute("SELECT * FROM jobs")
+
+
+    # ajax
+    if request.headers.get("X-Requested-With") == 'XMLHttpRequest':
+        return jsonify(jobs=[dict(row) for row in jobs], depts=depts)
+        # return jobs
+
+    # for content update
     job_edit_id = request.form.get('job-edit')
 
     for row in jobs:
         if job_edit_id == row['id']:
-
             return render_template("/update.html")
 
     return render_template("/careers.html", results=jobs, depts=depts)
